@@ -75,3 +75,8 @@ Side benefit of this is that consumers can deliberately rewind back to an old of
 
 As another example, the consumed data may
 be flushed to a persistent store only periodically (e.g, a full-text indexer). If the consumer crashes, the unflushed data is lost. In this case, the consumer can checkpoint the smallest offset of the unflushed messages and re-consume from that offset when it’s restarted. We note that rewinding a consumer is much easier to support in the pull model than the push model.
+
+**Check out Kafka Mirror Maker and Brooklin**
+- LinkedIn used Kafka Mirror Maker to copy data from the local to the aggregate cluster. Later, they encountered a scaling issue with this replication tool, so they switched to Brooklin, an internal solution that allows data to be streamed across different data stores.
+[link here](https://blog.det.life/how-did-linkedin-handle-7-trillion-messages-daily-with-apache-kafka-07a167f1a949)
+[LI_Engineering](https://engineering.linkedin.com/kafka/running-kafka-scale)
