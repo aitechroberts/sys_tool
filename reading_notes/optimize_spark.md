@@ -52,12 +52,17 @@ df.unpersist()
 **Storage Memory**: Used for caching DataFrames.
 **Execution Memory**: Used for computation (e.g., shuffles, joins, aggregations).
 2. Configuring Spark Memory
+- In Local Mode:
+    - `spark.executor.memory`: Total memory allocated to the executor (shared among all executor threads).
+        - Shared across all threads/cores
+    - `spark.driver.memory`: Memory allocated to the driver (can also be set).
+        - Ensures driver has enough memory for its tasks coordinating all executors and keeping track of metadata
 Adjust spark.driver.memory and spark.executor.memory:
 ```python
 spark = SparkSession.builder \
     .appName("AppName") \
     .config("spark.driver.memory", "4g") \
-    .config("spark.executor.memory", "4g") \
+    .config("spark.executor.memory", "2g") \
     .getOrCreate()
 ```
 - Note: Adjust the memory settings based on your system's available resources.
@@ -254,3 +259,12 @@ Order of Precedence:
 - spark.sql.broadcastTimeout
 - spark.sql.adaptive.enabled
 - spark.executor.heartbeatInterval
+
+## Reading from Database
+By default, when you read data from a JDBC source without specifying any partitioning options, Spark reads all the data in a single partition (i.e., single-threaded). This can be a performance bottleneck. To enable parallel reads, you can specify partitioning options so that Spark can read data in multiple partitions concurrently.
+
+1. Partitioning Options
+- `partitionColumn`: The name of a numeric column to partition on.
+- `lowerBound`: The minimum value of the partitionColumn.
+- `upperBound`: The maximum value of the partitionColumn.
+- `numPartitions`: The number of partitions (i.e., parallel connections) to create.
